@@ -21,13 +21,15 @@ jobs:
       COOKIES_71209119176: ${{ secrets.COOKIES_71209119176 }}
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: dev
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
     - name: Test Douyin Accessibility
       run: |
-        curl -I https://creator.douyin.com/
+        curl -I https://www.douyin.com/chat
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
