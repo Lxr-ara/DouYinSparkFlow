@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 name: DouYin Spark Flow Schedule Run
 on:
   workflow_dispatch: # 允许手动触发
@@ -35,3 +36,48 @@ jobs:
       with:
         name: run-logs
         path: logs/
+=======
+name: DouYin Spark Flow Schedule Run
+on:
+  workflow_dispatch: # 允许手动触发
+  schedule: # 定时任务
+    - cron: "0 1 * * *" # 每天 1:00 UTC（对应北京时间 9:00）
+jobs:
+  run-main:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    environment: user-data
+    env:
+      PROXY_ADDRESS: ${{ vars.PROXY_ADDRESS }}
+      MESSAGE_TEMPLATE: ${{ vars.MESSAGE_TEMPLATE }}
+      HITOKOTO_TYPES: ${{ vars.HITOKOTO_TYPES }}
+      MATCH_MODE: ${{ vars.MATCH_MODE }}
+      BROWSER_TIMEOUT: ${{ vars.BROWSER_TIMEOUT }}
+      FRIEND_LIST_WAIT_TIME: ${{ vars.FRIEND_LIST_WAIT_TIME }}
+      TASK_RETRY_TIMES: ${{ vars.TASK_RETRY_TIMES }}
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+      TASKS: ${{ vars.TASKS }}
+      COOKIES_71209119176: ${{ secrets.COOKIES_71209119176 }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Test Douyin Accessibility
+      run: |
+        curl -I https://creator.douyin.com/
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Ensure browsers are installed
+      run: playwright install chromium --with-deps --only-shell
+    - name: Run DouYin Spark Flow
+      run: python main.py
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: run-logs
+        path: logs/
+>>>>>>> Stashed changes
